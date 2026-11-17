@@ -1,13 +1,13 @@
 package com.stanislaw_kopec.medicalclinic.service;
 
 import com.stanislaw_kopec.medicalclinic.exception.EmailAlreadyInUseException;
+import com.stanislaw_kopec.medicalclinic.exception.PatientNotFoundException;
 import com.stanislaw_kopec.medicalclinic.model.Patient;
 import com.stanislaw_kopec.medicalclinic.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,33 +19,33 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
-    public Optional<Patient> getPatientByEmail(String email) {
-        return patientRepository.findByEmail(email);
+    public Patient get(String email) {
+        return patientRepository.find(email)
+                .orElseThrow(() -> new PatientNotFoundException(email));
     }
 
-    public Patient addPatient(Patient patient) {
-        if (patientRepository.findByEmail(patient.getEmail()).isPresent()) {
+    public Patient create(Patient patient) {
+        if (patientRepository.find(patient.getEmail()).isPresent()) {
             throw new EmailAlreadyInUseException(patient.getEmail());
         }
-
-        return patientRepository.addPatient(patient);
+        return patientRepository.create(patient);
     }
 
-    public boolean deletePatientByEmail(String email) {
-        return patientRepository.removePatientByEmail(email);
-    }
-
-    public boolean editPatientByEmail(Patient patient, String email) {
-        if (patientRepository.findByEmail(email).isEmpty()) {
-            return false;
+    public void delete(String email) {
+        if (!patientRepository.remove(email)) {
+            throw new PatientNotFoundException(email);
         }
+    }
 
+    public Patient edit(Patient patient, String email) {
+        if (patientRepository.find(email).isEmpty()) {
+            throw new PatientNotFoundException(email);
+        }
         String newEmail = patient.getEmail();
-        if (!newEmail.equals(email) && patientRepository.findByEmail(newEmail).isPresent()) {
+        if (!newEmail.equals(email) && patientRepository.find(newEmail).isPresent()) {
             throw new EmailAlreadyInUseException(newEmail);
         }
-
-        return patientRepository.editPatientByEmail(patient, email);
+        return patientRepository.edit(patient, email)
+                .orElseThrow(() -> new PatientNotFoundException(email));
     }
-
 }
