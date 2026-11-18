@@ -48,9 +48,10 @@ public class PatientRepository {
         });
     }
 
-    public void updatePassword(String email, String NewPassword) {
-        find(email).ifPresent(patient -> {
+    public boolean updatePassword(String email, String NewPassword) {
+        return find(email).map(patient -> {
             patient.setPassword(NewPassword);
-        });
+            return true;
+        }).orElse(false);
     }
 }

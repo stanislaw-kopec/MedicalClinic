@@ -50,8 +50,8 @@ public class PatientService {
     }
 
     public void updatePassword(String email, String password) {
-        patientRepository.find(email)
-                .orElseThrow(() -> new PatientNotFoundException(email));
-        patientRepository.updatePassword(email, password);
+        if (!patientRepository.updatePassword(email, password)) {
+            throw new PatientNotFoundException(email);
+        }
     }
 }
