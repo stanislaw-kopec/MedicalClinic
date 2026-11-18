@@ -49,7 +49,7 @@ public class PatientRepository {
     }
 
     public void updatePassword(String email, String NewPassword) {
-        patients.stream().filter(patient -> patient.getEmail().equals(email)).findFirst().ifPresent(patient -> {
+        find(email).ifPresent(patient -> {
             patient.setPassword(NewPassword);
         });
     }
