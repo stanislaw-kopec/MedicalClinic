@@ -48,4 +48,10 @@ public class PatientService {
         return patientRepository.edit(patient, email)
                 .orElseThrow(() -> new PatientNotFoundException(email));
     }
+
+    public void updatePassword(String email, String password) {
+        patientRepository.find(email)
+                .orElseThrow(() -> new PatientNotFoundException(email));
+        patientRepository.updatePassword(email, password);
+    }
 }

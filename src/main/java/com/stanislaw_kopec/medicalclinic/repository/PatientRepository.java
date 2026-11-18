@@ -47,4 +47,10 @@ public class PatientRepository {
             return patient;
         });
     }
+
+    public void updatePassword(String email, String NewPassword) {
+        patients.stream().filter(patient -> patient.getEmail().equals(email)).findFirst().ifPresent(patient -> {
+            patient.setPassword(NewPassword);
+        });
+    }
 }

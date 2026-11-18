@@ -45,4 +45,12 @@ public class PatientController {
             @Valid @RequestBody Patient patient) {
         return patientService.edit(patient, email);
     }
+
+    @PatchMapping("/{email}/{password}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePassword(
+            @PathVariable String email,
+            @PathVariable String password) {
+        patientService.updatePassword(email, password);
+    }
 }
