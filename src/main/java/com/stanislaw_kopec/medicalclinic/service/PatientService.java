@@ -21,37 +21,37 @@ public class PatientService {
 
     public Patient get(String email) {
         return patientRepository.find(email)
-                .orElseThrow(() -> new PatientNotFoundException(email));
+                .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found"));
     }
 
     public Patient create(Patient patient) {
         if (patientRepository.find(patient.getEmail()).isPresent()) {
-            throw new EmailAlreadyInUseException(patient.getEmail());
+            throw new EmailAlreadyInUseException("Email " + patient.getEmail() + " is already in use");
         }
         return patientRepository.create(patient);
     }
 
     public void delete(String email) {
         if (!patientRepository.remove(email)) {
-            throw new PatientNotFoundException(email);
+            throw new PatientNotFoundException("Patient with email " + email + " not found");
         }
     }
 
     public Patient edit(Patient patient, String email) {
         if (patientRepository.find(email).isEmpty()) {
-            throw new PatientNotFoundException(email);
+            throw new PatientNotFoundException("Patient with email " + email + " not found");
         }
         String newEmail = patient.getEmail();
         if (!newEmail.equals(email) && patientRepository.find(newEmail).isPresent()) {
-            throw new EmailAlreadyInUseException(newEmail);
+            throw new EmailAlreadyInUseException("Email " + email + " is already in use");
         }
         return patientRepository.edit(patient, email)
-                .orElseThrow(() -> new PatientNotFoundException(email));
+                .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found"));
     }
 
     public void updatePassword(String email, String password) {
         if (!patientRepository.updatePassword(email, password)) {
-            throw new PatientNotFoundException(email);
+            throw new PatientNotFoundException("Patient with email " + email + " not found");
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.stanislaw_kopec.medicalclinic.exception;
 
-public class EmailAlreadyInUseException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public EmailAlreadyInUseException(String email) {
-        super("Email " + email + " is already in use.");
+public class EmailAlreadyInUseException extends MedicalClinicException {
+
+    public EmailAlreadyInUseException(String message) {
+        super(message, HttpStatus.CONFLICT);
     }
 }

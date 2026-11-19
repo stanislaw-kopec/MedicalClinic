@@ -1,8 +1,10 @@
 package com.stanislaw_kopec.medicalclinic.exception;
 
-public class PatientNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public PatientNotFoundException(String email) {
-        super("Patient with email " + email + " was not found.");
+public class PatientNotFoundException extends MedicalClinicException {
+
+    public PatientNotFoundException(String message) {
+        super(message, HttpStatus.NOT_FOUND);
     }
 }
