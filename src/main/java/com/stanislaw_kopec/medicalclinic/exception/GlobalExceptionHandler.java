@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MedicalClinicException.class)
-    public ResponseEntity<String> handleMedicalClinicException(MedicalClinicException exception) {
+    public ResponseEntity<ErrorMessage> handleMedicalClinicException(MedicalClinicException exception) {
         return ResponseEntity
                 .status(exception.getHttpStatus())
-                .body(exception.getMessage());
+                .body(new ErrorMessage(exception.getMessage()));
     }
 }
