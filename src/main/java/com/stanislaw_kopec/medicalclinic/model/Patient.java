@@ -9,6 +9,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 public class Patient {
 
     @NotBlank
