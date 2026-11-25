@@ -32,13 +32,12 @@ public class PatientServiceTest {
     @Test
     void get_DataCorrect_PatientReturned() {
         //given
-        Patient patient = new Patient("jan@wp.pl", "Password123", "CCS343434", "Jan",
-                "Kowalski", "111222333", LocalDate.of(2000, 4, 21)
-        );
-        when(patientRepository.find("jan@wp.pl"))
-                .thenReturn(Optional.of(patient));
+        Patient patient = new Patient("jan@wp.pl", "Password123", "CCS343434", "Jan","Kowalski", "111222333", LocalDate.of(2000, 4, 21));
+        when(patientRepository.find("jan@wp.pl")).thenReturn(Optional.of(patient));
+
         //when
         PatientDTO result = patientService.get("jan@wp.pl");
+
         //then
         Assertions.assertAll(
                 () -> Assertions.assertEquals("jan@wp.pl", result.email()),
@@ -54,17 +53,16 @@ public class PatientServiceTest {
     void findAll_DataCorrect_PatientsReturned() {
         //given
         List<Patient> patients = List.of(
-            new Patient("anna@gmail.com", "Password123", "WEW111222", "Anna",
-                    "Nowak", "333222111", LocalDate.of(2000, 4, 1)),
-            new Patient("jan@gmail.com", "Password3434", "SDA334343", "Jan",
-                    "Kowalski", "222333777", LocalDate.of(1992, 3, 13))
-        );
-        when(patientRepository.findAll())
-                .thenReturn(patients);
+            new Patient("anna@gmail.com", "Password123", "WEW111222", "Anna", "Nowak", "333222111", LocalDate.of(2000, 4, 1)),
+            new Patient("jan@gmail.com", "Password3434", "SDA334343", "Jan", "Kowalski", "222333777", LocalDate.of(1992, 3, 13)));
+        when(patientRepository.findAll()).thenReturn(patients);
+
         //when
         List<PatientDTO> result = patientService.findAll();
+
         //then
         Assertions.assertAll(
+                () -> Assertions.assertEquals(2, result.size()),
                 () -> Assertions.assertEquals("anna@gmail.com", result.getFirst().email()),
                 () -> Assertions.assertEquals("WEW111222", result.getFirst().idCardNo()),
                 () -> Assertions.assertEquals("Anna", result.getFirst().firstName()),
@@ -83,17 +81,13 @@ public class PatientServiceTest {
     @Test
     void create_DataCorrect_PatientCreated() {
         //given
-        PatientDTO request = new PatientDTO(
-                "jan@wp.pl", "Password123", "CCS343434", "Jan",
-                "Kowalski", "111222333", LocalDate.of(2000, 4, 21)
-        );
-        Patient patient = new Patient("jan@wp.pl", "Password123", "CCS343434", "Jan",
-                "Kowalski", "111222333", LocalDate.of(2000, 4, 21)
-        );
-        when(patientRepository.create(patient))
-                .thenReturn(patient);
+        PatientDTO request = new PatientDTO("jan@wp.pl", "Password123", "CCS343434", "Jan", "Kowalski", "111222333", LocalDate.of(2000, 4, 21));
+        Patient patient = new Patient("jan@wp.pl", "Password123", "CCS343434", "Jan","Kowalski", "111222333", LocalDate.of(2000, 4, 21));
+        when(patientRepository.create(patient)).thenReturn(patient);
+
         //when
         PatientDTO result = patientService.create(request);
+
         //then
         Assertions.assertAll(
                 () -> Assertions.assertEquals("jan@wp.pl", result.email()),
@@ -110,28 +104,19 @@ public class PatientServiceTest {
     @Test
     void edit_RequestDataCorrectAndPatientWithEmailFound_PatientUpdated() {
         //given
-        Patient patient = new Patient(
-                "marta@wp.pl", "MySecret123", "CDE888434", "Marta",
-                "Nowak", "405405405", LocalDate.of(2001, 2, 16)
-        );
-        Patient updatedPatient = new Patient(
-                "marta1@wp.pl", "MySecret123", "CDE888434", "Marta",
-                "Nowak-Kowalska", "405405405", LocalDate.of(2001, 2, 16)
-        );
-        PatientDTO request = new PatientDTO(
-                "marta1@wp.pl", "MySecret123", "CDE888434", "Marta",
-                "Nowak-Kowalska", "405405405", LocalDate.of(2001, 2, 16)
-        );
+        Patient patient = new Patient("marta@wp.pl", "MySecret123", "CDE888434", "Marta", "Nowak", "405405405", LocalDate.of(2001, 2, 16));
+        Patient updatedPatient = new Patient("marta@wp.pl", "MySecret123", "CDE888434", "Marta", "Nowak-Kowalska", "405405405", LocalDate.of(2001, 2, 16));
+        PatientDTO request = new PatientDTO("marta@wp.pl", "MySecret123", "CDE888434", "Marta", "Nowak-Kowalska", "405405405", LocalDate.of(2001, 2, 16));
         String email = "marta@wp.pl";
-        when(patientRepository.find(email))
-                .thenReturn(Optional.of(patient));
-        when(patientRepository.edit(updatedPatient, email))
-                .thenReturn(Optional.of(patientMapper.toPatient(request)));
+        when(patientRepository.find(email)).thenReturn(Optional.of(patient));
+        when(patientRepository.edit(updatedPatient, email)).thenReturn(Optional.of(updatedPatient));
+
         //when
         PatientDTO result = patientService.edit(request, email);
+
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals("marta1@wp.pl", result.email()),
+                () -> Assertions.assertEquals("marta@wp.pl", result.email()),
                 () -> Assertions.assertEquals("CDE888434", result.idCardNo()),
                 () -> Assertions.assertEquals("Marta", result.firstName()),
                 () -> Assertions.assertEquals("Nowak-Kowalska", result.lastName()),
