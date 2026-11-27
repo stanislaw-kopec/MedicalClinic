@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -171,9 +172,9 @@ public class PatientServiceTest {
         when(patientRepository.edit(updatedPatient, email)).thenReturn(Optional.empty());
 
         //when and then
-        PatientNotFoundException exception = Assertions.assertThrows(
-                PatientNotFoundException.class, () -> patientService.edit(request, email));
+        PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class, () -> patientService.edit(request, email));
         Assertions.assertEquals("Patient with email " + email + " not found", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         Mockito.verify(patientRepository).find(email);
         Mockito.verify(patientRepository).edit(updatedPatient, email);
     }
@@ -187,6 +188,7 @@ public class PatientServiceTest {
         //when and then
         PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class, () -> patientService.get(email));
         Assertions.assertEquals("Patient with email " + email + " not found", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         Mockito.verify(patientRepository).find(email);
     }
 
@@ -201,6 +203,7 @@ public class PatientServiceTest {
         //when and then
         EmailAlreadyInUseException exception = Assertions.assertThrows(EmailAlreadyInUseException.class, () -> patientService.create(patientDTO));
         Assertions.assertEquals("Email " + email + " is already in use", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
         Mockito.verify(patientRepository).find(email);
     }
 
@@ -228,6 +231,7 @@ public class PatientServiceTest {
         //when and then
         PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class, () -> patientService.updatePassword(email, request));
         Assertions.assertEquals("Patient with email " + email + " not found", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         Mockito.verify(patientRepository).updatePassword(email, request.password());
     }
 
@@ -253,6 +257,7 @@ public class PatientServiceTest {
         //when and then
         PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class, () -> patientService.delete(email));
         Assertions.assertEquals("Patient with email " + email + " not found", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         Mockito.verify(patientRepository).remove(email);
     }
 
@@ -266,6 +271,7 @@ public class PatientServiceTest {
         //when and then
         PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class, () -> patientService.edit(request, email));
         Assertions.assertEquals("Patient with email " + email + " not found", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         Mockito.verify(patientRepository).find(email);
     }
 
@@ -282,6 +288,7 @@ public class PatientServiceTest {
         //when and then
         EmailAlreadyInUseException exception = Assertions.assertThrowsExactly(EmailAlreadyInUseException.class, () -> patientService.edit(request, email));
         Assertions.assertEquals("Email " + request.email() + " is already in use", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
         Mockito.verify(patientRepository).find(email);
         Mockito.verify(patientRepository).find(request.email());
     }
